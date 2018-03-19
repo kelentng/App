@@ -21,10 +21,17 @@ public class TestDatabase {
 			e.printStackTrace();
 		}
 		
-		db.addPerson(new Person("Joe","builder",AgeCategory.adult, EmploymentCategory.employed, true,"777",Gender.male));
+		db.addPerson(new Person("Joe","software trainer",AgeCategory.adult, EmploymentCategory.employed, true,"777",Gender.male));
 		db.addPerson(new Person("Sue","artist",AgeCategory.senior, EmploymentCategory.selfEmployed, false,null,Gender.female));
 		try {
 			db.save();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		try {
+			db.load();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

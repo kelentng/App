@@ -20,7 +20,7 @@ public class Person implements Serializable{
 	public Person(String name, String occupation, AgeCategory ageCat, EmploymentCategory empCat,
 			boolean usCitizen, String taxId, Gender gender) {
 		
-		this.id = count;
+		
 		this.name = name;
 		this.occupation = occupation;
 		this.ageCat = ageCat;
@@ -29,7 +29,18 @@ public class Person implements Serializable{
 		this.taxId = taxId;
 		this.gender = gender;
 		count++;
+		this.id = count;
 	}
+	
+	
+	public Person(int id, String name, String occupation, AgeCategory ageCat, EmploymentCategory empCat,
+			boolean usCitizen, String taxId, Gender gender) {
+		this(name, occupation, ageCat, empCat, usCitizen, taxId, gender);
+		this.id = id;
+		
+		
+	}
+	
 	public int getId() {
 		return id;
 	}
@@ -79,6 +90,8 @@ public class Person implements Serializable{
 		this.gender = gender;
 	}
 	
-	
+	public String toString() {
+		return id+": "+name;
+	}
 	
 }

@@ -11,6 +11,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -47,11 +48,37 @@ public class Database {
 		}
 	}
 	
+	public void load() throws SQLException {
+		people.clear();
+		String sql = "select id, name, age, employment_status, tax_id, us_citizen, gender, occupation from people order by name";
+		Statement selectStmt = con.createStatement();
+		ResultSet results = selectStmt.executeQuery(sql);
+		while(results.next()) {
+			int id = results.getInt("id");
+			String name = results.getString("name");
+			String age = results.getString("age");
+			String emp = results.getString("employment_status");
+			String tax = results.getString("tax_id");
+			boolean isUs = results.getBoolean("us_citizen");
+			String gender = results.getString("gender");
+			String occ = results.getString("occupation");
+			Person person = new Person(id, name, occ, AgeCategory.valueOf(age), EmploymentCategory.valueOf(emp), isUs, tax, Gender.valueOf(gender));
+			people.add(person);
+			System.out.println(person);
+			
+			
+			
+		}
+		results.close();
+		selectStmt.close();
+	}
 	public void save() throws SQLException {
 		String checkSql = "select count(*) as count from people where id=?";
 		String insertSql = "insert into people (id, name, age, employment_status, tax_id, us_citizen, gender, occupation) values (?,?,?,?,?,?,?,?)";
+		String updateSql = "update people set name=?, age=?, employment_status=?, tax_id=?, us_citizen=?, gender=?, occupation=? where id=?";
 		PreparedStatement checkStmt = con.prepareStatement(checkSql);
 		PreparedStatement insertStmt = con.prepareStatement(insertSql);
+		PreparedStatement updateStmt = con.prepareStatement(updateSql);
 		for(Person person:people) {
 			int id = person.getId();
 			String name = person.getName();
@@ -80,12 +107,25 @@ public class Database {
 			}
 			else {
 				System.out.println("Updating person with id: "+id);
+				int col = 1;
+				updateStmt.setString(col++, name);
+				updateStmt.setString(col++, ageCat.name());
+				updateStmt.setString(col++, empCat.name());
+				updateStmt.setString(col++, taxId);
+				updateStmt.setBoolean(col++, isUs);
+				updateStmt.setString(col++, gender.name());
+				updateStmt.setString(col++, occupation);
+				updateStmt.setInt(col++, id);
+				
+				updateStmt.executeUpdate();
+				
 			}
 			
 		}
 		
 		insertStmt.close();
 		checkStmt.close();
+		updateStmt.close();
 	}
 	
 	public void addPerson(Person person) {
