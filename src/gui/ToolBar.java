@@ -18,8 +18,8 @@ public class ToolBar extends JToolBar implements ActionListener{
 		//setFloatable(false);
 		saveButton = new JButton();
 		refreshButton = new JButton();
-		saveButton.setIcon(createIcon("/images/Save16.gif"));
-		refreshButton.setIcon(createIcon("/images/Refresh16.gif"));
+		saveButton.setIcon(Utils.createIcon("/images/Save16.gif"));
+		refreshButton.setIcon(Utils.createIcon("/images/Refresh16.gif"));
 		saveButton.setToolTipText("Save");
 		refreshButton.setToolTipText("Refresh");
 		
@@ -31,14 +31,7 @@ public class ToolBar extends JToolBar implements ActionListener{
 		add(refreshButton);
 	}
 	
-	private ImageIcon createIcon(String path) {
-		URL url = getClass().getResource(path);
-		if(url==null) {
-			System.err.println("Unable to load image: "+path);
-		}
-		ImageIcon icon = new ImageIcon(url);
-		return icon;
-	}
+	
 	
 	public void setToolbarListener(ToolbarListener listener) {
 		this.listener = listener;

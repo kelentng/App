@@ -36,6 +36,7 @@ public class MainFrame extends JFrame {
 	private JSplitPane splitPane;
 	private JTabbedPane tabPane;
 	private TextPanel textPanel;
+	private MessagePanel messagePanel;
 	public MainFrame() {
 		super("Hello World");
 		setSize(600,500);
@@ -53,10 +54,11 @@ public class MainFrame extends JFrame {
 		prefs = Preferences.userRoot().node("db");
 		tabPane = new JTabbedPane();
 		textPanel = new TextPanel();
+		messagePanel = new MessagePanel();
 		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,formPanel,tabPane);
 		splitPane.setOneTouchExpandable(true);
 		tabPane.addTab("Person Database", tablePanel);
-		tabPane.addTab("Messages", textPanel);
+		tabPane.addTab("Messages", messagePanel);
 		
 		addWindowListener(new WindowAdapter() {
 
