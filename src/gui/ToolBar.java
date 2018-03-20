@@ -8,37 +8,37 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 public class ToolBar extends JPanel implements ActionListener{
-	private JButton helloButton;
-	private JButton goodbyeButton;
-	private StringListener listener;
+	private JButton saveButton;
+	private JButton refreshButton;
+	private ToolbarListener listener;
 	public ToolBar() {
 		setLayout(new FlowLayout(FlowLayout.LEFT));
 		setBorder(BorderFactory.createEtchedBorder());
-		helloButton = new JButton("Hello");
-		goodbyeButton = new JButton("GoodBye");
+		saveButton = new JButton("Save");
+		refreshButton = new JButton("Refresh");
 		
-		helloButton.addActionListener(this);
-		goodbyeButton.addActionListener(this);
+		saveButton.addActionListener(this);
+		refreshButton.addActionListener(this);
 		
-		add(helloButton);
-		add(goodbyeButton);
+		add(saveButton);
+		add(refreshButton);
 	}
 	
-	public void setStringListener(StringListener listener) {
+	public void setToolbarListener(ToolbarListener listener) {
 		this.listener = listener;
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		JButton clicked = (JButton)e.getSource();
-		if(clicked==helloButton) {
+		if(clicked==saveButton) {
 			if(listener!=null) {
-				listener.TextEmitted("Hello\n");
+				listener.saveEventOccured();
 			}
 		}
-		else if(clicked==goodbyeButton){
+		else if(clicked==refreshButton){
 			if(listener!=null) {
-				listener.TextEmitted("Goodbye\n");
+				listener.refreshEventOccured();
 			}
 		}
 	}
