@@ -17,6 +17,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
 
 import controller.Controller;
@@ -31,6 +33,9 @@ public class MainFrame extends JFrame {
 	private Controller controller;
 	private PrefsDialog prefsDialog;
 	private Preferences prefs;
+	private JSplitPane splitPane;
+	private JTabbedPane tabPane;
+	private TextPanel textPanel;
 	public MainFrame() {
 		super("Hello World");
 		setSize(600,500);
@@ -46,6 +51,12 @@ public class MainFrame extends JFrame {
 		tablePanel.setData(controller.getPeople());
 		prefsDialog = new PrefsDialog(this);
 		prefs = Preferences.userRoot().node("db");
+		tabPane = new JTabbedPane();
+		textPanel = new TextPanel();
+		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,formPanel,tabPane);
+		splitPane.setOneTouchExpandable(true);
+		tabPane.addTab("Person Database", tablePanel);
+		tabPane.addTab("Messages", textPanel);
 		
 		addWindowListener(new WindowAdapter() {
 
@@ -60,8 +71,7 @@ public class MainFrame extends JFrame {
 		});
 		
 		add(toolBar,BorderLayout.PAGE_START);
-		add(formPanel,BorderLayout.WEST);
-		add(tablePanel,BorderLayout.CENTER);
+		add(splitPane,BorderLayout.CENTER);
 		
 		
 		toolBar.setToolbarListener(new ToolbarListener() {
@@ -169,6 +179,9 @@ public class MainFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent ev) {
 				JCheckBoxMenuItem menuItem = (JCheckBoxMenuItem)ev.getSource();
+				if(menuItem.isSelected()) {
+					splitPane.setDividerLocation((int)formPanel.getMinimumSize().getWidth());
+				}
 				formPanel.setVisible(menuItem.isSelected());
 			}
 			
