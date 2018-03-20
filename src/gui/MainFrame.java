@@ -3,6 +3,9 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.prefs.Preferences;
@@ -44,10 +47,22 @@ public class MainFrame extends JFrame {
 		prefsDialog = new PrefsDialog(this);
 		prefs = Preferences.userRoot().node("db");
 		
+		addWindowListener(new WindowAdapter() {
+
+			@Override
+			public void windowClosing(WindowEvent arg0) {
+				System.out.println("Window Closing");
+				controller.disconnect();
+				dispose();
+				System.gc();
+			}
+			
+		});
 		
 		add(toolBar,BorderLayout.NORTH);
 		add(formPanel,BorderLayout.WEST);
 		add(tablePanel,BorderLayout.CENTER);
+		
 		
 		toolBar.setToolbarListener(new ToolbarListener() {
 			public void saveEventOccured() {
@@ -116,7 +131,7 @@ public class MainFrame extends JFrame {
 		prefsDialog.setDefaults(user, password, port);
 				
 		
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setVisible(true);
 	}
 	
@@ -194,7 +209,13 @@ public class MainFrame extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				System.exit(0);
+				int action = JOptionPane.showConfirmDialog(MainFrame.this, "Do you really to exit the application?", "Confirm Exit", JOptionPane.OK_CANCEL_OPTION);
+				if(action==JOptionPane.OK_OPTION) {
+					WindowListener[] listeners = getWindowListeners();
+					for(WindowListener listener:listeners) {
+						listener.windowClosing(new WindowEvent(MainFrame.this,0));
+					}
+				}
 			}
 			
 		});
