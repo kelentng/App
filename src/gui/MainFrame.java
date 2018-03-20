@@ -59,7 +59,7 @@ public class MainFrame extends JFrame {
 			
 		});
 		
-		add(toolBar,BorderLayout.NORTH);
+		add(toolBar,BorderLayout.PAGE_START);
 		add(formPanel,BorderLayout.WEST);
 		add(tablePanel,BorderLayout.CENTER);
 		

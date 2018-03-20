@@ -7,24 +7,27 @@ import java.net.URL;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JPanel;
+import javax.swing.JToolBar;
 
-public class ToolBar extends JPanel implements ActionListener{
+public class ToolBar extends JToolBar implements ActionListener{
 	private JButton saveButton;
 	private JButton refreshButton;
 	private ToolbarListener listener;
 	public ToolBar() {
-		setLayout(new FlowLayout(FlowLayout.LEFT));
 		setBorder(BorderFactory.createEtchedBorder());
-		saveButton = new JButton("Save");
-		refreshButton = new JButton("Refresh");
-		saveButton.setIcon(createIcon("images/Save16.gif"));
-		refreshButton.setIcon(createIcon("images/Refresh16.gif"));
+		//setFloatable(false);
+		saveButton = new JButton();
+		refreshButton = new JButton();
+		saveButton.setIcon(createIcon("/images/Save16.gif"));
+		refreshButton.setIcon(createIcon("/images/Refresh16.gif"));
+		saveButton.setToolTipText("Save");
+		refreshButton.setToolTipText("Refresh");
 		
 		saveButton.addActionListener(this);
 		refreshButton.addActionListener(this);
 		
 		add(saveButton);
+		addSeparator();
 		add(refreshButton);
 	}
 	
