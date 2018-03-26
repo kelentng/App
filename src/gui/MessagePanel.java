@@ -5,6 +5,8 @@ import java.awt.BorderLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
+import javax.swing.event.CellEditorListener;
+import javax.swing.event.ChangeEvent;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -59,11 +61,15 @@ public class MessagePanel extends JPanel {
 		serverTree.setEditable(true);
 		
 		serverTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-		serverTree.addTreeSelectionListener(new TreeSelectionListener() {
-			public void valueChanged(TreeSelectionEvent arg0) {
-				DefaultMutableTreeNode node = (DefaultMutableTreeNode)serverTree.getLastSelectedPathComponent();
-				Object userObject = node.getUserObject();
-				System.out.println(userObject);
+		treeCellEditor.addCellEditorListener(new CellEditorListener() {
+			@Override
+			public void editingCanceled(ChangeEvent arg0) {
+				
+			}
+			@Override
+			public void editingStopped(ChangeEvent arg0) {
+				ServerInfo info = (ServerInfo)treeCellEditor.getCellEditorValue();
+				System.out.println(info +": "+info.getId()+"; "+info.isChecked());
 			}
 			
 		});
