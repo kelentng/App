@@ -1,6 +1,7 @@
 package controller;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -8,7 +9,7 @@ import java.util.TreeMap;
 
 import model.Message;
 
-public class MessageServer {
+public class MessageServer implements Iterable<Message>{
 	private Map<Integer,List<Message>> messages;
 	private List<Message> selected;
 	public MessageServer() {
@@ -36,4 +37,32 @@ public class MessageServer {
 	public int getMessageCount() {
 		return selected.size();
 	}
+
+	@Override
+	public Iterator<Message> iterator() {
+		return new MessageIterator(selected);
+	}
+}
+
+class MessageIterator implements Iterator{
+	private Iterator<Message> iterator;
+	public MessageIterator(List<Message> messages) {
+		iterator = messages.iterator();
+	}
+	@Override
+	public boolean hasNext() {
+		return iterator.hasNext();
+	}
+
+	@Override
+	public Object next() {
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return iterator.next();
+	}
+	
 }

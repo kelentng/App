@@ -13,6 +13,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeSelectionModel;
 
 import controller.MessageServer;
+import model.Message;
 
 class ServerInfo{
 	private String name;
@@ -88,6 +89,10 @@ public class MessagePanel extends JPanel {
 				
 				messageServer.setSelectedServers(selectedServers);
 				System.out.println("Messages waiting: "+messageServer.getMessageCount());
+				
+				for(Message message:messageServer) {
+				System.out.println(message.getTitle());
+				}
 			}
 			
 		});
