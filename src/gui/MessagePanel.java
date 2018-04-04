@@ -1,12 +1,16 @@
 package gui;
 
 import java.awt.BorderLayout;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.ExecutionException;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
+import javax.swing.SwingWorker;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -88,17 +92,60 @@ public class MessagePanel extends JPanel {
 				}
 				
 				messageServer.setSelectedServers(selectedServers);
-				System.out.println("Messages waiting: "+messageServer.getMessageCount());
 				
-				for(Message message:messageServer) {
-				System.out.println(message.getTitle());
-				}
+				
+				
+				
+				retrieveMessages();
 			}
+			
 			
 		});
 		
 		setLayout(new BorderLayout());
 		add(new JScrollPane(serverTree),BorderLayout.CENTER);
+	}
+	
+	private void retrieveMessages() {
+		System.out.println("Messages waiting: "+messageServer.getMessageCount());
+		SwingWorker<List<Message>,Integer> worker = new SwingWorker<List<Message>,Integer>(){
+
+			
+			@Override
+			protected void done() {
+				try {
+					List<Message> retrieveMessages = get();
+					System.out.println("Recieved : "+retrieveMessages.size());
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ExecutionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
+			@Override
+			protected void process(List<Integer> counts) {
+				int retrieved = counts.get(counts.size()-1);
+				System.out.println("Got "+retrieved+"Messages.");
+			}
+
+			@Override
+			protected List<Message> doInBackground() throws Exception {
+				List<Message> retrieveMessages = new ArrayList<Message>();
+				int count = 0;
+				for(Message message:messageServer) {
+					System.out.println(message.getTitle());
+					retrieveMessages.add(message);
+					count++;
+					publish(count);
+					}
+				return retrieveMessages;
+			}
+			
+		};
+		worker.execute();
 	}
 	
 	private DefaultMutableTreeNode createNode() {
