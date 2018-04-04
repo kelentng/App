@@ -10,11 +10,13 @@ import java.util.concurrent.ExecutionException;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
+import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeSelectionModel;
+import java.awt.Window;
 
 import controller.MessageServer;
 import model.Message;
@@ -60,7 +62,9 @@ public class MessagePanel extends JPanel {
 	private ServerTreeCellEditor treeCellEditor;
 	private Set<Integer> selectedServers;
 	private MessageServer messageServer;
+	private ProgressDialog progressDialog;
 	public MessagePanel() {
+		progressDialog = new ProgressDialog((Window)getParent());
 		messageServer = new MessageServer();
 		selectedServers = new TreeSet<Integer>();
 		selectedServers.add(0);
@@ -108,6 +112,18 @@ public class MessagePanel extends JPanel {
 	
 	private void retrieveMessages() {
 		System.out.println("Messages waiting: "+messageServer.getMessageCount());
+		SwingUtilities.invokeLater(new Runnable() {
+
+			@Override
+			public void run() {
+				System.out.println("Showing modal dialog");
+				progressDialog.setVisible(true);
+				System.out.println("Finished showing modal dialog");
+			}
+			
+		}
+			
+		);
 		SwingWorker<List<Message>,Integer> worker = new SwingWorker<List<Message>,Integer>(){
 
 			
@@ -123,6 +139,7 @@ public class MessagePanel extends JPanel {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				progressDialog.setVisible(false);
 			}
 
 			@Override
