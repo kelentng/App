@@ -54,7 +54,7 @@ public class MainFrame extends JFrame {
 		prefs = Preferences.userRoot().node("db");
 		tabPane = new JTabbedPane();
 		textPanel = new TextPanel();
-		messagePanel = new MessagePanel();
+		messagePanel = new MessagePanel(this);
 		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,formPanel,tabPane);
 		splitPane.setOneTouchExpandable(true);
 		tabPane.addTab("Person Database", tablePanel);

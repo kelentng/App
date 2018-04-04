@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.ExecutionException;
 
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
@@ -63,8 +64,8 @@ public class MessagePanel extends JPanel {
 	private Set<Integer> selectedServers;
 	private MessageServer messageServer;
 	private ProgressDialog progressDialog;
-	public MessagePanel() {
-		progressDialog = new ProgressDialog((Window)getParent());
+	public MessagePanel(JFrame parent) {
+		progressDialog = new ProgressDialog(parent);
 		messageServer = new MessageServer();
 		selectedServers = new TreeSet<Integer>();
 		selectedServers.add(0);
@@ -111,14 +112,12 @@ public class MessagePanel extends JPanel {
 	}
 	
 	private void retrieveMessages() {
-		System.out.println("Messages waiting: "+messageServer.getMessageCount());
+		progressDialog.setMaximum(messageServer.getMessageCount());
 		SwingUtilities.invokeLater(new Runnable() {
 
 			@Override
 			public void run() {
-				System.out.println("Showing modal dialog");
 				progressDialog.setVisible(true);
-				System.out.println("Finished showing modal dialog");
 			}
 			
 		}
@@ -131,7 +130,6 @@ public class MessagePanel extends JPanel {
 			protected void done() {
 				try {
 					List<Message> retrieveMessages = get();
-					System.out.println("Recieved : "+retrieveMessages.size());
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -145,7 +143,7 @@ public class MessagePanel extends JPanel {
 			@Override
 			protected void process(List<Integer> counts) {
 				int retrieved = counts.get(counts.size()-1);
-				System.out.println("Got "+retrieved+"Messages.");
+				progressDialog.setValue(retrieved);
 			}
 
 			@Override
