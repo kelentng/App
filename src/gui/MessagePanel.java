@@ -113,16 +113,8 @@ public class MessagePanel extends JPanel {
 	
 	private void retrieveMessages() {
 		progressDialog.setMaximum(messageServer.getMessageCount());
-		SwingUtilities.invokeLater(new Runnable() {
-
-			@Override
-			public void run() {
-				progressDialog.setVisible(true);
-			}
-			
-		}
-			
-		);
+		progressDialog.setVisible(true);
+		
 		SwingWorker<List<Message>,Integer> worker = new SwingWorker<List<Message>,Integer>(){
 
 			
