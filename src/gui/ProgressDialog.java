@@ -1,6 +1,7 @@
 package gui;
 
 
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Window;
@@ -79,6 +80,13 @@ public class ProgressDialog extends JDialog {
 				}
 				else {
 					progressBar.setValue(0);
+				}
+				
+				if(visible) {
+					setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+				}
+				else {
+					setCursor(Cursor.getDefaultCursor());
 				}
 				ProgressDialog.super.setVisible(visible);
 			}
