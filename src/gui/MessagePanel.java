@@ -1,23 +1,25 @@
 package gui;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.ExecutionException;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTree;
-import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeSelectionModel;
-import java.awt.Window;
 
 import controller.MessageServer;
 import model.Message;
@@ -59,6 +61,11 @@ class ServerInfo{
 }
 public class MessagePanel extends JPanel implements ProgressDialogListener{
 	private JTree serverTree;
+	private TextPanel textPanel;
+	private JList messageList;
+	private DefaultListModel messageListModel;
+	private JSplitPane upperPane;
+	private JSplitPane lowerPane;
 	private ServerTreeCellRenderer treeCellRenderer;
 	private ServerTreeCellEditor treeCellEditor;
 	private Set<Integer> selectedServers;
@@ -81,6 +88,8 @@ public class MessagePanel extends JPanel implements ProgressDialogListener{
 		serverTree.setEditable(true);
 		
 		serverTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+		
+		messageServer.setSelectedServers(selectedServers);
 		treeCellEditor.addCellEditorListener(new CellEditorListener() {
 			@Override
 			public void editingCanceled(ChangeEvent arg0) {
@@ -89,7 +98,6 @@ public class MessagePanel extends JPanel implements ProgressDialogListener{
 			@Override
 			public void editingStopped(ChangeEvent arg0) {
 				ServerInfo info = (ServerInfo)treeCellEditor.getCellEditorValue();
-				System.out.println(info +": "+info.getId()+"; "+info.isChecked());
 				
 				if(info.isChecked()) {
 					selectedServers.add(info.getId());
@@ -109,9 +117,22 @@ public class MessagePanel extends JPanel implements ProgressDialogListener{
 			
 		});
 		
+		textPanel = new TextPanel();
+		messageListModel = new DefaultListModel();
+		messageList = new JList(messageListModel);
+		lowerPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,messageList,textPanel);
+		upperPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,new JScrollPane(serverTree),lowerPane);
+		textPanel.setMinimumSize(new Dimension(10,100));
+		messageList.setMinimumSize(new Dimension(10,100));
+		upperPane.setResizeWeight(0.5);
+		lowerPane.setResizeWeight(0.5);
 		setLayout(new BorderLayout());
-		add(new JScrollPane(serverTree),BorderLayout.CENTER);
+		add(upperPane,BorderLayout.CENTER);
 	}
+	
+	public void refresh() {
+		retrieveMessages();
+		}
 	
 	private void retrieveMessages() {
 		progressDialog.setMaximum(messageServer.getMessageCount());
@@ -126,6 +147,10 @@ public class MessagePanel extends JPanel implements ProgressDialogListener{
 				if(isCancelled()) return;
 				try {
 					List<Message> retrieveMessages = get();
+					messageListModel.removeAllElements();
+					for(Message message:messageServer) {
+						messageListModel.addElement(message.getTitle());
+					}
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

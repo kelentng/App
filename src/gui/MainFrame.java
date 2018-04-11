@@ -20,6 +20,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import controller.Controller;
 
@@ -35,7 +37,6 @@ public class MainFrame extends JFrame {
 	private Preferences prefs;
 	private JSplitPane splitPane;
 	private JTabbedPane tabPane;
-	private TextPanel textPanel;
 	private MessagePanel messagePanel;
 	public MainFrame() {
 		super("Hello World");
@@ -53,13 +54,20 @@ public class MainFrame extends JFrame {
 		prefsDialog = new PrefsDialog(this);
 		prefs = Preferences.userRoot().node("db");
 		tabPane = new JTabbedPane();
-		textPanel = new TextPanel();
 		messagePanel = new MessagePanel(this);
 		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,formPanel,tabPane);
 		splitPane.setOneTouchExpandable(true);
 		tabPane.addTab("Person Database", tablePanel);
 		tabPane.addTab("Messages", messagePanel);
-		
+		tabPane.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent arg0) {
+				int tabIndex = tabPane.getSelectedIndex();
+				if(tabIndex==1) {
+					messagePanel.refresh();
+				}
+			}
+			
+		});
 		addWindowListener(new WindowAdapter() {
 
 			@Override
