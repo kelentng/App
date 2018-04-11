@@ -120,7 +120,7 @@ public class MessagePanel extends JPanel implements ProgressDialogListener{
 		textPanel = new TextPanel();
 		messageListModel = new DefaultListModel();
 		messageList = new JList(messageListModel);
-		lowerPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,messageList,textPanel);
+		lowerPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,new JScrollPane(messageList),textPanel);
 		upperPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,new JScrollPane(serverTree),lowerPane);
 		textPanel.setMinimumSize(new Dimension(10,100));
 		messageList.setMinimumSize(new Dimension(10,100));
